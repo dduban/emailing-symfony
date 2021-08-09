@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -46,7 +46,7 @@ class User
     private $birthday;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" : 0})
      */
     private $is_confirm;
 
@@ -113,12 +113,12 @@ class User
         return $this;
     }
 
-    public function getBirthday(): ?\DateTimeInterface
+    public function getBirthday(): ?DateTimeInterface
     {
         return $this->birthday;
     }
 
-    public function setBirthday(\DateTimeInterface $birthday): self
+    public function setBirthday(DateTimeInterface $birthday): self
     {
         $this->birthday = $birthday;
 

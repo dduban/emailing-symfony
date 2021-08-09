@@ -3,13 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Entity\Alert;
 use App\Form\UserType;
 use App\Repository\UserRepository;
+use Swift_Mailer;
+use Swift_Message;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Route("/user")
@@ -29,7 +29,7 @@ class UserController extends AbstractController
     /**
      * @Route("/new", name="user_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, Swift_Mailer $mailer): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -40,6 +40,13 @@ class UserController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
+            $msg = $this->confEmail(
+                $this->container->getParameter('email_subject'),
+                $this->container->getParameter('email_from'),
+                $user->getEmail(),
+                $user->getAlerts()
+            );
+
             return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -47,6 +54,38 @@ class UserController extends AbstractController
             'user' => $user,
             'form' => $form->createView(),
         ]);
+    }
+
+    public function confEmail($subject, $sender_address, $recipient_address, $alerts)
+    {
+
+        $message = Swift_Message::newInstance()
+            ->setSubject($subject)
+            ->setFrom($sender_address)
+            ->setTo($recipient_address)
+            ->setBody(
+                $this->renderView(
+                    'confEmail.html.twig',
+                    array('alerts' => $alerts)),
+                    'text/html'
+                );
+
+        return $this->get('mailer')->send($message);
+
+    }
+
+    public function unsubEmail($email)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $emailer = $entityManager
+            ->getRepository(UnsubBundle:User)
+            ->findOneBy(array('$email'=>$email));
+
+        $entityManager->remove($emailer);
+        $entityManager->flush();
+
+        return $this->render('unsubEmail.html.twig');
     }
 
     /**
