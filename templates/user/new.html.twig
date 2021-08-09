@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New User{% endblock %}
+
+{% block body %}
+    <h1>Create new User</h1>
+
+
+    {{ form_start(form) }}
+    {# ... #}
+
+    {# store the prototype on the data-prototype attribute #}
+
+    <ul class="alerts" data-prototype="{{ form_widget(form.alerts.vars.prototype)|e('html_attr') }}"></ul>
+
+    <button type="button" class="add_item_link" data-collection-holder-class="alerts">Dodaj nowy alert</button>
+
+    {# ... #}
+    {{ form_end(form) }}
+
+
+    <a href="{{ path('user_index') }}">back to list</a>
+
+
+
+    <script>
+        const addAlertLink = document.createElement('a')
+        addAlertLink.classList.add('add_alert_list')
+        addAlertLink.href='#'
+        addAlertLink.innerText='Add a alert'
+        addAlertLink.dataset.collectionHolderClass='alerts'
+
+        const newLinkLi = document.createElement('li').append(addAlertLink)
+
+        const collectionHolder = document.querySelector('ul.alerts')
+        collectionHolder.appendChild(addAlertLink)
+
+        const addFormToCollection = (e) => {
+            const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+
+            const item = document.createElement('li');
+
+            item.innerHTML = collectionHolder
+                .dataset
+                .prototype
+                .replace(
+                    /__name__/g,
+                    collectionHolder.dataset.index
+                );
+
+            collectionHolder.appendChild(item);
+
+            collectionHolder.dataset.index++;
+        }
+
+        addAlertLink.addEventListener("click", addFormToCollection)
+    </script>
+{% endblock %}
