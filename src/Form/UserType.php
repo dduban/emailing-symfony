@@ -3,10 +3,10 @@
 namespace App\Form;
 
 use App\Entity\User;
-use Doctrine\DBAL\Types\IntegerType;
-use Doctrine\DBAL\Types\StringType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -25,8 +25,8 @@ class UserType extends AbstractType
                     new Unique()
                 ]
             ])
-            ->add('name', StringType::class, ['constraints' => new NotBlank()] )
-            ->add('surname', StringType::class, ['constraints' => new NotBlank()])
+            ->add('name', TextType::class, ['constraints' => new NotBlank()] )
+            ->add('surname', TextType::class, ['constraints' => new NotBlank()])
             ->add('phone', IntegerType::class, [
                 'constraints' => [
                     new NotBlank(),

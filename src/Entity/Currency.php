@@ -24,6 +24,8 @@ class Currency
      */
     private $name;
 
+
+
     /**
      * @ORM\Column(type="float")
      */
@@ -33,6 +35,11 @@ class Currency
      * @ORM\OneToMany(targetEntity=Alert::class, mappedBy="currency", orphanRemoval=true)
      */
     private $alerts;
+
+    /**
+     * @ORM\Column(type="string", length=4)
+     */
+    private $code;
 
     public function __construct()
     {
@@ -101,6 +108,18 @@ class Currency
     public function __toString()
     {
         return $this->getName();
+    }
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(string $code): self
+    {
+        $this->code = $code;
+
+        return $this;
     }
 
 
