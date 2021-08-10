@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Currency;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
@@ -90,6 +91,17 @@ class UserController extends AbstractController
         $entityManager->flush();
 
         return $this->render('unsubEmail.html.twig');
+    }
+
+
+    public function sendAlert($code, $value)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT user.email FROM user LEFT JOIN alert ON alert.id_user = user.id LEFT JOIN currency ON alert.currency = currency.id WHERE currency.code='.$code.' AND (alert.min > '.$value.' OR alert.max < '.$value.' )'
+        );
+
     }
 
     /**

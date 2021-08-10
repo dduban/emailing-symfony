@@ -41,6 +41,12 @@ class Currency
      */
     private $code;
 
+    /**
+     * @ORM\Column(type="datetime")
+     * @var string A "Y-m-d H:i:s" formatted value
+     */
+    private $lastDate;
+
     public function __construct()
     {
         $this->alerts = new ArrayCollection();
@@ -118,6 +124,18 @@ class Currency
     public function setCode(string $code): self
     {
         $this->code = $code;
+
+        return $this;
+    }
+
+    public function getLastDate(): ?\DateTimeInterface
+    {
+        return $this->lastDate;
+    }
+
+    public function setLastDate(\DateTimeInterface $lastDate): self
+    {
+        $this->lastDate = $lastDate;
 
         return $this;
     }
