@@ -21,7 +21,7 @@ class User
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $email;
 
@@ -46,12 +46,12 @@ class User
     private $birthday;
 
     /**
-     * @ORM\Column(type="boolean", options={"default" : 0})
+     * @ORM\Column(type="boolean")
      */
-    private $is_confirm;
+    private $is_confirm = false;
 
     /**
-     * @ORM\OneToMany(targetEntity=Alert::class, mappedBy="id_user", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Alert::class, mappedBy="id_user", orphanRemoval=true, cascade={"persist"})
      */
     private $alerts;
 

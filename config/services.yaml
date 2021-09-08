@@ -29,3 +29,18 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    download_currencies\:
+        resource: '../src/Currency/DownloadCurrencies.php'
+
+    add_currencies\:
+        resource: '../src/Currency/DownloadCurrencies.php'
+
+    update_currencies\:
+        resource: '../src/Currency/UpdateCurrencies.php'
+
+    manager_currencies\:
+        resource: '../src/Currency/CurrencyManager.php'
+
+    manager_email\:
+        resource: '../src/Emailer/EmailManager.php'

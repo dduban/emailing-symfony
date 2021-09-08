@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+    nginx:
+      build:
+        context: .
+        dockerfile: Dockerfile-nginx
+      volumes:
+        - /home/projects/emailing-symfony/:/var/www/symfony
+      ports:
+        - 80:80
+      networks:
+        - symfony
+
+    php:
+      build:
+        context: .
+        dockerfile: Dockerfile-php
+      environment:
+        APP_ENV: dev
+        DATABASE_URL: mysql://root:root.123@mysql:3306/email_db?serverversion=5.7
+      volumes:
+        - /home/projects/emailing-symfony/:/var/www/symfony
+      networks:
+        - symfony
+
+    mysql:
+      image: mysql
+      command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci', '--default-authentication-plugin=mysql_native_password']
+      environment:
+        MYSQL_ROOT_PASSWORD: root.123
+      ports:
+        - 3306:3306
+#      volumes:
+#        - ./mysql:/var/lib/mysql
+      networks:
+        - symfony
+
+networks:
+    symfony:

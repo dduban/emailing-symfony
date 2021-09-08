@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\User;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -21,8 +22,7 @@ class UserType extends AbstractType
         $builder
             ->add('email', EmailType::class, [
                 'constraints' => [
-                    new NotBlank(),
-                    new Unique()
+                    new NotBlank()
                 ]
             ])
             ->add('name', TextType::class, ['constraints' => new NotBlank()] )
@@ -30,7 +30,7 @@ class UserType extends AbstractType
             ->add('phone', IntegerType::class, [
                 'constraints' => [
                     new NotBlank(),
-                    new Regex("/^[1-9].[0-9]{8}/")
+                    new Regex("/^[1-9][0-9]{8}/")
                 ]
             ])
             ->add('birthday')

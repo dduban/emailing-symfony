@@ -37,7 +37,7 @@ class Currency
     private $alerts;
 
     /**
-     * @ORM\Column(type="string", length=4)
+     * @ORM\Column(type="string", length=4, unique=true)
      */
     private $code;
 

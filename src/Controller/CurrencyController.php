@@ -2,76 +2,53 @@
 
 namespace App\Controller;
 
+use App\Currency\AddCurrencies;
+use App\Currency\UpdateCurrencies;
 use App\Entity\Currency;
+use App\Entity\Alert;
 use App\Controller\UserController;
+use App\Currency\DownloadCurrencies;
+use App\Repository\AlertRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 
-
 class CurrencyController extends AbstractController
 {
 
-
-    public function allCurrencies($lastDate)
+    /**
+     * @Route("/getcurrency/", name="get_currency", methods={"GET","POST"})
+     */
+    public function allCurrencies(DownloadCurrencies $downloadCurrencies, UpdateCurrencies $updateCurrencies, AddCurrencies $addCurrencies)
     {
         $entityManager = $this->getDoctrine()->getManager();
+        $repo = $this->getDoctrine()->getRepository(Currency::class);
+        $currencies = $repo->findAll();
 
-        $lastupdate = $this->getDoctrine()->getRepository(Currency::class)->find($lastDate);
+        $data = $downloadCurrencies->downloadCurrencies();
 
-        if(!$lastDate) {
-            throw $this->createNotFoundException(
-                'Nie znaleziono rekordow dla danej daty'
-            );
+        if (empty($currencies)) {
+            return $addCurrencies->addCurrencies($data, $entityManager);
+        } else {
+            return $updateCurrencies->updateCurrencies($data, $entityManager, $repo);
         }
 
-        $lastupdate->format('Y-m-d H:i:s');
-
-        $current = new \DateTime();
-
-        $diff = date_diff($lastupdate, $current)->i;
-
-        $currencyTable = [];
-        if($diff == 30){
-
-            $session = curl_init();
-            curl_setopt($session, CURLOPT_URL, 'https://api.nbp.pl/api/exchangerates/tables/A?format=json');
-            curl_setopt($session, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
-            $response = curl_exec($session);
-            curl_close($session);
-
-            $data = json_decode($response);
-
-            foreach ($data[0]->rates as $rate) {
-
-                $name = $rate->currency;
-                $code = $rate->code;
-                $value = $rate->mid;
-
-                $currencyTable[] = ['name' => $name, 'code' => $code, 'value' => $value];
-
-                $new_curr = new Currency();
-                $new_curr->setName($name);
-                $new_curr->setCode($code);
-                $new_curr->setValue($value);
-                $new_curr->setLastDate(new \DateTime());
-
-                $entityManager->persist($new_curr);
-                $entityManager->flush();
-
-                sendAlert($code, $value);
-            }
-
-
-
-        }
 
     }
 
+    /**
+     * @Route("/alerts/", name="show_alerts", methods={"GET","POST"})
+     */
+    public function index(AlertRepository $alertRepository): Response
+    {
 
 
+        return $this->render('user/indexalert.html.twig', [
+            'alerts' => $alertRepository->findOutOfRangeUsers(),
+        ]);
+    }
 
 
 }

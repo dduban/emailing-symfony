@@ -16,6 +16,7 @@
                 <th>Birthday</th>
                 <th>Is_confirm</th>
                 <th>actions</th>
+                <th>count</th>
             </tr>
         </thead>
         <tbody>
@@ -26,12 +27,14 @@
                 <td>{{ user.name }}</td>
                 <td>{{ user.surname }}</td>
                 <td>{{ user.phone }}</td>
+
                 <td>{{ user.birthday ? user.birthday|date('Y-m-d') : '' }}</td>
                 <td>{{ user.isConfirm ? 'Yes' : 'No' }}</td>
                 <td>
                     <a href="{{ path('user_show', {'id': user.id}) }}">show</a>
                     <a href="{{ path('user_edit', {'id': user.id}) }}">edit</a>
                 </td>
+                <td>{{ user.alerts.count }}</td>
             </tr>
         {% else %}
             <tr>

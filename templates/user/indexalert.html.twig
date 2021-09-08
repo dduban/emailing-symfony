@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Alerts index{% endblock %}
+
+{% block body %}
+    <h1>Alerts index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>User</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for alert in alerts %}
+            <tr>
+                <td>{{ alert.userId }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

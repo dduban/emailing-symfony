@@ -1,0 +1,26 @@
+FROM php:8.0.10-fpm-buster
+
+RUN apt-get update && apt-get install -y
+
+RUN apt install unzip iproute2 -y
+
+RUN pecl install xdebug  && docker-php-ext-enable xdebug
+
+RUN echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+    echo "xdebug.client_port=9003" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
+    echo "xdebug.client_host=$(ip route show | grep default | grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}')" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
+RUN apt-get install -y --no-install-recommends \
+        git \
+        zlib1g-dev \
+        libxml2-dev \
+        libzip-dev \
+    && docker-php-ext-install \
+        zip \
+        intl \
+        mysqli \
+        pdo pdo_mysql
+
+RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
+COPY symfony/ /var/www/symfony
+WORKDIR /var/www/symfony/

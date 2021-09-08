@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Alert;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,6 +15,30 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class AlertRepository extends ServiceEntityRepository
 {
+    public function findOutOfRangeUsers(): array
+    {
+        return $this->createQueryBuilder('a')
+            ->select('u.id as userId, u.email as userEmail')
+            ->innerJoin('a.currency', 'c', Join::WITH, 'a.currency = c.id')
+            ->innerJoin('a.id_user', 'u', Join::WITH, 'a.id_user = u.id')
+            ->where('(a.min > c.value) OR (a.max < c.value)')
+            ->groupBy('u.id')
+            ->getQuery()
+            ->execute();
+    }
+
+    public function findOutOfRange($user): array
+    {
+        return $this->createQueryBuilder('a')
+            ->innerJoin('a.currency', 'c', Join::WITH, 'a.currency = c.id')
+            ->innerJoin('a.id_user', 'u', Join::WITH, 'a.id_user = u.id')
+            ->where('((a.min > c.value) OR (a.max < c.value)) AND (u.id = :userId)')
+            ->setParameter('userId', $user)
+            ->getQuery()
+            ->execute();
+    }
+
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Alert::class);

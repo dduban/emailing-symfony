@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Currencies index{% endblock %}
+
+{% block body %}
+    <h1>Currencies index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Value</th>
+                <th>Code</th>
+                <th>Last update</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for currency in currencies %}
+            <tr>
+                <td>{{ currency.id }}</td>
+                <td>{{ currency.name }}</td>
+                <td>{{ currency.value }}</td>
+                <td>{{ currency.code }}</td>
+                <td>{{ currency.last_date }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

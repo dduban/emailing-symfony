@@ -13,9 +13,11 @@
 
     <ul class="alerts" data-prototype="{{ form_widget(form.alerts.vars.prototype)|e('html_attr') }}"></ul>
 
-    <button type="button" class="add_item_link" data-collection-holder-class="alerts">Dodaj nowy alert</button>
+
 
     {# ... #}
+
+    <button class="btn">{{ button_label|default('Save') }}</button>
     {{ form_end(form) }}
 
 

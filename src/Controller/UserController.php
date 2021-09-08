@@ -34,7 +34,7 @@ class UserController extends AbstractController
     /**
      * @Route("/new", name="user_new", methods={"GET","POST"})
      */
-    public function new(Request $request, Swift_Mailer $mailer): Response
+    public function new(Request $request): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -45,12 +45,6 @@ class UserController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $msg = $this->confEmail(
-                $this->container->getParameter('email_subject'),
-                $this->container->getParameter('email_from'),
-                $user->getEmail(),
-                $user->getAlerts()
-            );
 
             return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -94,15 +88,6 @@ class UserController extends AbstractController
     }
 
 
-    public function sendAlert($code, $value)
-    {
-        $entityManager = $this->getDoctrine()->getManager();
-
-        $query = $entityManager->createQuery(
-            'SELECT user.email FROM user LEFT JOIN alert ON alert.id_user = user.id LEFT JOIN currency ON alert.currency = currency.id WHERE currency.code='.$code.' AND (alert.min > '.$value.' OR alert.max < '.$value.' )'
-        );
-
-    }
 
     /**
      * @Route("/{id}", name="user_show", methods={"GET"})
@@ -135,7 +120,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="user_delete", methods={"POST"})
+     * @Route("/{id}/delete", name="user_delete", methods={"POST"})
      */
     public function delete(Request $request, User $user): Response
     {
