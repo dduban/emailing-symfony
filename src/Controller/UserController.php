@@ -73,19 +73,7 @@ class UserController extends AbstractController
 
     }
 
-    public function unsubEmail($email)
-    {
-        $entityManager = $this->getDoctrine()->getManager();
 
-        $emailer = $entityManager
-            ->getRepository(UnsubBundle:User)
-            ->findOneBy(array('$email'=>$email));
-
-        $entityManager->remove($emailer);
-        $entityManager->flush();
-
-        return $this->render('unsubEmail.html.twig');
-    }
 
 
 

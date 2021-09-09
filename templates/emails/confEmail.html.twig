@@ -2,71 +2,44 @@
 <head></head>
 
 <body>
-    <h2> Alarm cen walut.</h2>
+    <h2> Alarm cen walut dla usera: {{ userId }}.</h2>
 
     <p>
 
         <table class="table">
-            <thead>
+        <thead>
+        <tr>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Value</th>
+            <th>Set min</th>
+            <th>Set max</th>
+            <th>Last update</th>
+            <th>Unsubscribe</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for value in valuesOutOfRange %}
             <tr>
-                <th>Code</th>
-                <th>Value</th>
-                <th>User name</th>
-                <th>Alert when min</th>
-                <th>Alert when max</th>
-                <th>Update date</th>
+                <td>{{ value.currency.code }}</td>
+                <td>{{ value.currency.name }}</td>
+                <td>{{ value.currency.value }}</td>
+                <td>{{ value.min }}</td>
+                <td>{{ value.max }}</td>
+                <td>{{ value.currency.lastDate|date() }}</td>
+                <td><a href="{{ path('unsubscribe_alert', {'id': value.id}) }}">Unsub</a></td>
             </tr>
-            </thead>
-            <tbody>
-            {% for alert in alerts %}
-                <tr>
-                    <td>{{ alert.currency.code }}</td>
-                    <td>{{ alert.currency.value }}</td>
-                    <td>{{ alert.idUser.name }}</td>
-                    <td>{{ alert.min }}</td>
-                    <td>{{ alert.max }}</td>
-                    <td>{{ alert.currency.last_date }}</td>
-
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="8">no records found</td>
-                </tr>
-            {% endfor %}
-            </tbody>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
         </table>
 
-{#        <table class="table">#}
-{#            <thead>#}
-{#            <tr>#}
-{#                <th>Id</th>#}
-{#                <th>Code</th>#}
-{#                <th>Value</th>#}
-{#                <th>User name</th>#}
-{#                <th>Alert when min</th>#}
-{#                <th>Alert when max</th>#}
-{#                <th>Update date</th>#}
-{#            </tr>#}
-{#            </thead>#}
-{#            <tbody>#}
-{#            {% for alert in alerts %}#}
-{#                <tr>#}
-{#                    <td>{{ alert.id }}</td>#}
-{#                    <td>{{ alert.currency.code }}</td>#}
-{#                    <td>{{ alert.currency.value }}</td>#}
-{#                    <td>{{ alert.idUser.name }}</td>#}
-{#                    <td>{{ alert.min }}</td>#}
-{#                    <td>{{ alert.max }}</td>#}
-{#                    <td>{{ alert.currency.last_date }}</td>#}
-{#    #}
-{#                </tr>#}
-{#            {% else %}#}
-{#                <tr>#}
-{#                    <td colspan="8">no records found</td>#}
-{#                </tr>#}
-{#            {% endfor %}#}
-{#            </tbody>#}
-{#        </table>#}
+    <a href="{{ path('subscribe_alert', {'id': userId}) }}">Add new alert</a>
+
+
 
     </p>
 

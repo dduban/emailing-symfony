@@ -34,17 +34,6 @@ class EmailManager
         $this->em = $em;
     }
 
-#    public function sendAlertTest(): bool
-#    {
-#        $email = (new Email())
-#            ->from('alienmailcarrier@example.com')
-#            ->to('exampleemail@example.com')
-#            ->subject('D-word')
-#            ->text("Blagam niech to dziala️");
-#        $this->mailer->send($email);
-
-#        return true;
-#    }
 
 
     public function sendAlert(): bool
@@ -61,17 +50,16 @@ class EmailManager
             $userEmail = $propertyAccessor->getValue($user, '[userEmail]');
             $valuesOutRange = $repoAlerts->findOutOfRange($userId);
 
-
             if (!empty($valuesOutRange)) {
-                $email = (new Email())
+                $email = (new TemplatedEmail())
                     ->from('from@example.com')
                     ->to($userEmail)
                     ->subject('teraz zadziala')
-                    ->text('POWINNY BYC DWA');
-//                    ->htmlTemplate('emails/alertEmail.html.twig')
-//                    ->context([
-//                        'valuesOutOfRange' => $valuesOutRange
-//                    ]);
+                    ->htmlTemplate('emails/confEmail.html.twig')
+                    ->context([
+                        'valuesOutOfRange' => $valuesOutRange,
+                        'userId' => $userId
+                    ]);
                 $this->mailer->send($email);
 
             } else {
@@ -80,31 +68,5 @@ class EmailManager
         }
 
         return true;
-//
-//
-//        foreach ($valuesOutRange as $value) {
-//
-//            $userToAlert = $value->getUser();
-//
-//            if (!empty($valuesOutRange)) {
-//                $email = (new Email())
-//                    ->from('from@example.com')
-//                    ->to($user->getEmail())
-//                    ->subject('Currency alert!')
-//                    ->htmlTemplate('emails/alertEmail.html.twig')
-//                    ->context([
-//                        'users' => $alertRepository->findOutOfRangeUser($user->getId())
-//                    ]);
-//                $this->mailer->send($email);
-//            } else {
-//                return false;
-//            }
-//        }
-//
-//        foreach ($alertsToSend as $alert) {
-//            $alert->get
-//        }
-//        return true;
-//
     }
 }

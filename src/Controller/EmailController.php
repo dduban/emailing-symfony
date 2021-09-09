@@ -1,59 +1,57 @@
 <?php
 
 namespace App\Controller;
+use App\Entity\Alert;
+use App\Form\AlertType;
 use App\Repository\AlertRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 
 class EmailController extends AbstractController
 {
-
-
-
-    public function sendAlert(AlertRepository $alertRepository, MailerInterface $mailer, UserRepository $userRepository): Response
+    /**
+     * @Route("/unsubscribe/{id}", name="unsubscribe_alert", methods={"GET", "POST"})
+     */
+    public function unsubscribe(Request $request, Alert $alert): Response
     {
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($alert);
+        $entityManager->flush();
 
-        foreach ($userRepository as $user) {
-
-            $email = (new Email())
-                ->from('')
-                ->to()
-                ->subject('Currency alert!')
-                ->htmlTemplate('emails/alertEmail.html.twig')
-                ->context([
-                    'alerts' => $alertRepository->findAll()
-                ]);
-
-            return $mailer->send($email);
-
-        }
+        return $this->redirectToRoute('show_alerts', [], Response::HTTP_SEE_OTHER);
 
     }
 
-
-
-
-
-
-    public function confEmail($subject, $sender_address, $recipient_address, $alerts)
+    /**
+     * @Route("/subscribe/{id}", name="subscribe_alert", methods={"GET", "POST"})
+     */
+    public function subscribe($id, Request $request, Alert $alert): Response
     {
 
-        $message = Swift_Message::newInstance()
-            ->setSubject($subject)
-            ->setFrom($sender_address)
-            ->setTo($recipient_address)
-            ->setBody(
-                $this->renderView(
-                    'confEmail.html.twig',
-                    array('alerts' => $alerts)),
-                'text/html'
-            );
+        $alert = new Alert();
+        $form = $this->createForm(AlertType::class, $alert);
+        $form->handleRequest($request);
 
-        return $this->get('mailer')->send($message);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($alert);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('show_alerts', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('alert/new.html.twig', [
+            'idUser' => $id,
+            'alert' => $alert,
+            'form' => $form->createView()
+        ]);
+
 
     }
 }

@@ -8,13 +8,25 @@
     <table class="table">
         <thead>
             <tr>
-                <th>User</th>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Value</th>
+                <th>Set min</th>
+                <th>Set max</th>
+                <th>Last update</th>
+                <th>Unsubscribe</th>
             </tr>
         </thead>
         <tbody>
         {% for alert in alerts %}
             <tr>
-                <td>{{ alert.userId }}</td>
+                <td>{{ alert.currency.code }}</td>
+                <td>{{ alert.currency.name }}</td>
+                <td>{{ alert.currency.value }}</td>
+                <td>{{ alert.min }}</td>
+                <td>{{ alert.max }}</td>
+                <td>{{ alert.currency.lastdate|date() }}</td>
+                <td><a href="{{ path('unsubscribe_alert', {'id': alert.id}) }}">Unsub</a></td>
             </tr>
         {% else %}
             <tr>
@@ -23,5 +35,6 @@
         {% endfor %}
         </tbody>
     </table>
+    <a href="{{ path('subscribe_alert') }}">Add new alert</a>
 
 {% endblock %}

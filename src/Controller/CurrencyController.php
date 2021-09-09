@@ -43,10 +43,11 @@ class CurrencyController extends AbstractController
      */
     public function index(AlertRepository $alertRepository): Response
     {
+        $alerts = $alertRepository->findOutOfRange(3);
 
 
         return $this->render('user/indexalert.html.twig', [
-            'alerts' => $alertRepository->findOutOfRangeUsers(),
+            'alerts' => $alerts,
         ]);
     }
 
