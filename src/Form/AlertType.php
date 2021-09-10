@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Entity\Alert;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -17,7 +18,8 @@ class AlertType extends AbstractType
             ->add('min')
             ->add('max')
             ->add('currency')
-            ->add('idUser', HiddenType::class, ['data' => $idUser])
+            ->add('idUser', TextType::class
+            )
         ;
     }
 
@@ -25,6 +27,9 @@ class AlertType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Alert::class,
+            'idUser' => null,
         ]);
     }
+
+
 }

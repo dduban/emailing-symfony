@@ -2,11 +2,17 @@
 
 namespace App\Currency;
 
-use App\Entity\Currency;
+
+
+use App\DTO\Currency;
+use App\Interfaces\CurrencyDTO;
 
 class DownloadCurrencies
 {
-    public function downloadCurrencies()
+    /**
+     * @return CurrencyDTO[]
+     */
+    public function downloadCurrencies(): array
     {
         $session = curl_init();
         curl_setopt($session, CURLOPT_URL, 'https://api.nbp.pl/api/exchangerates/tables/A?format=json');
@@ -14,10 +20,28 @@ class DownloadCurrencies
         curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
         $response = curl_exec($session);
         curl_close($session);
-        $ratesArray=json_decode($response);
+        $ratesDecode=json_decode($response);
 
+        $currenciesDtoArray = array();
 
-        return $ratesArray[0]->rates;
+        $rates = $ratesDecode[0]->rates;
+
+        foreach ($rates as $rate) {
+
+            $name = $rate->currency;
+            $code = $rate->code;
+            $mid = $rate->mid;
+
+            $currency = new Currency();
+            $currency->setCode($code);
+            $currency->setName($name);
+            $currency->setValue($mid);
+
+            $currenciesDtoArray[] = $currency;
+
+        }
+
+        return $currenciesDtoArray;
 
     }
 }

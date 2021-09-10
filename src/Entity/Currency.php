@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Interfaces\CurrencyDTO;
 use App\Repository\CurrencyRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -142,3 +143,26 @@ class Currency
 
 
 }
+
+
+
+//class CurrenciesReceiver {
+//    public function dataReceivedCurrency(CurrencyDTO $currencyDto);
+//}
+//
+//interface CurrencyDTO {
+//    public function getName();
+//    public function getCode();
+//    public function getValue();
+//}
+//
+//class Currency implements CurrencyDTO { };
+
+
+
+
+
+
+
+
+

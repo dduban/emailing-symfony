@@ -2,13 +2,14 @@
 <head></head>
 
 <body>
-    <h2> Alarm cen walut dla usera: {{ userId }}.</h2>
+    <h2> Alarm cen walut.</h2>
 
     <p>
 
         <table class="table">
         <thead>
         <tr>
+            <th>Alert ID Hash</th>
             <th>Code</th>
             <th>Name</th>
             <th>Value</th>
@@ -19,15 +20,16 @@
         </tr>
         </thead>
         <tbody>
-        {% for value in valuesOutOfRange %}
+        {% for alert in valuesToSend %}
             <tr>
-                <td>{{ value.currency.code }}</td>
-                <td>{{ value.currency.name }}</td>
-                <td>{{ value.currency.value }}</td>
-                <td>{{ value.min }}</td>
-                <td>{{ value.max }}</td>
-                <td>{{ value.currency.lastDate|date() }}</td>
-                <td><a href="{{ path('unsubscribe_alert', {'id': value.id}) }}">Unsub</a></td>
+                <td>{{ alert.hashId }}</td>
+                <td>{{ alert.code }}</td>
+                <td>{{ alert.name }}</td>
+                <td>{{ alert.value }}</td>
+                <td>{{ alert.min }}</td>
+                <td>{{ alert.max }}</td>
+                <td>{{ alert.lastUpdate|date() }}</td>
+                <td><a href="{{ url('unsubscribe_alert', {'id': alert.hashId}) }}">Unsub</a></td>
             </tr>
         {% else %}
             <tr>
@@ -37,7 +39,7 @@
         </tbody>
         </table>
 
-    <a href="{{ path('subscribe_alert', {'id': userId}) }}">Add new alert</a>
+    <a href="{{ url('subscribe_alert', {'id': userIdHash }) }}">Add new alert</a>
 
 
 

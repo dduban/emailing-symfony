@@ -27,6 +27,10 @@ class AlertRepository extends ServiceEntityRepository
             ->execute();
     }
 
+    /**
+     * @param $user
+     * @return Alert[]
+     */
     public function findOutOfRange($user): array
     {
         return $this->createQueryBuilder('a')

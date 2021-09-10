@@ -2,6 +2,7 @@
 
 namespace App\Emailer;
 
+use App\DTO\AlertData;
 use App\Repository\AlertRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -11,6 +12,7 @@ use Symfony\Component\Mime\Email;
 use App\Entity\Alert;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use App\Tools\UrlHelper;
 
 
 class EmailManager
@@ -35,7 +37,6 @@ class EmailManager
     }
 
 
-
     public function sendAlert(): bool
     {
         $repoAlerts = $this->em->getRepository(Alert::class);
@@ -50,15 +51,33 @@ class EmailManager
             $userEmail = $propertyAccessor->getValue($user, '[userEmail]');
             $valuesOutRange = $repoAlerts->findOutOfRange($userId);
 
+            $userIdHash = $this->base64url_encode($userId);
+
+            $valuesToSend = [];
+
+            foreach ($valuesOutRange as $alert) {
+                $alertData = new AlertData();
+                $alertData->setValue($alert->getCurrency()->getValue())
+                    ->setName($alert->getCurrency()->getName())
+                    ->setCode($alert->getCurrency()->getCode())
+                    ->setMax($alert->getMax())
+                    ->setMin($alert->getMin())
+                    ->setLastUpdate($alert->getCurrency()->getLastDate())
+                    ->setHashId($this->base64url_encode($alert->getId()));
+                $valuesToSend[] = $alertData;
+            }
+
+
             if (!empty($valuesOutRange)) {
                 $email = (new TemplatedEmail())
                     ->from('from@example.com')
                     ->to($userEmail)
-                    ->subject('teraz zadziala')
+                    ->subject('pjonteczek')
                     ->htmlTemplate('emails/confEmail.html.twig')
                     ->context([
                         'valuesOutOfRange' => $valuesOutRange,
-                        'userId' => $userId
+                        'userIdHash' => $userIdHash,
+                        'valuesToSend' => $valuesToSend
                     ]);
                 $this->mailer->send($email);
 
@@ -69,4 +88,10 @@ class EmailManager
 
         return true;
     }
+
+    function base64url_encode($data)
+    {
+        return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+    }
+
 }
