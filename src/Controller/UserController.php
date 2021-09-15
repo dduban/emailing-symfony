@@ -34,7 +34,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/new_rest", name="user_new_rest", methods={"POST"})
+     * @Route("/rest/new", name="user_new_rest", methods={"POST"})
      * @throws \Exception
      */
     public function newRest(Request $request): JsonResponse
@@ -85,7 +85,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/index_rest", name="user_index_rest", methods={"GET"})
+     * @Route("/rest/", name="user_index_rest", methods={"GET"})
      */
     public function indexRest(): JsonResponse
     {
@@ -108,7 +108,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/edit_rest/{id}", name="user_update_rest", methods={"PUT"})
+     * @Route("/rest/edit/{id}", name="user_update_rest", methods={"PUT"})
      */
     public function updateRest($id, Request $request): JsonResponse
     {
@@ -127,7 +127,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/delete_rest/{id}", name="user_delete_rest", methods={"DELETE"})
+     * @Route("/rest/delete/{id}", name="user_delete_rest", methods={"DELETE"})
      */
     public function deleteRest($id): JsonResponse
     {

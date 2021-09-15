@@ -53,3 +53,8 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
 
+    api_key_authenticator:
+        class: AppBundle\Security\ApiTokenAuthenticator
+        arguments: ["@router"]
+
+

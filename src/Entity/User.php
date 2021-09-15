@@ -7,12 +7,13 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="`user`")
  */
-class User
+class User implements UserInterface
 {
     /**
      * @ORM\Id
@@ -50,6 +51,12 @@ class User
      * @ORM\Column(type="boolean")
      */
     private $is_confirm = false;
+
+    /**
+     * @ORM\Column(type="string", unique=true, nullable=true)
+     */
+
+    private $apiToken;
 
     /**
      * @ORM\OneToMany(targetEntity=Alert::class, mappedBy="id_user", orphanRemoval=true, cascade={"persist"})
@@ -138,6 +145,18 @@ class User
         return $this;
     }
 
+    public function getApiToken(): ?string
+    {
+        return $this->apiToken;
+    }
+
+    public function setApiToken(string $apiToken): self
+    {
+        $this->apiToken = $apiToken;
+
+        return $this;
+    }
+
     /**
      * @return Collection|Alert[]
      */
@@ -182,4 +201,28 @@ class User
     }
 
 
+    public function getRoles()
+    {
+        return array('ROLE_USER');
+    }
+
+    public function getPassword()
+    {
+        // TODO: Implement getPassword() method.
+    }
+
+    public function getSalt()
+    {
+        // TODO: Implement getSalt() method.
+    }
+
+    public function getUsername()
+    {
+        return $this->email;
+    }
+
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
 }
