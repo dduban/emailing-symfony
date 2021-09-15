@@ -72,7 +72,7 @@ class EmailManager
                 $email = (new TemplatedEmail())
                     ->from('from@example.com')
                     ->to($userEmail)
-                    ->subject('pjonteczek')
+                    ->subject('poniedzialek :(')
                     ->htmlTemplate('emails/confEmail.html.twig')
                     ->context([
                         'valuesOutOfRange' => $valuesOutRange,

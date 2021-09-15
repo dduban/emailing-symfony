@@ -168,5 +168,18 @@ class User
         return $this;
     }
 
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'email' => $this->getEmail(),
+            'name' => $this->getName(),
+            'surname' => $this->getSurname(),
+            'phone' => $this->getPhone(),
+            'birthday' => $this->getBirthday(),
+            'is_confirm' => $this->getIsConfirm()
+        ];
+    }
+
 
 }

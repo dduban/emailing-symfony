@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,10 +16,45 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class UserRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $manager;
+
+    public function __construct(ManagerRegistry $registry, EntityManagerInterface $manager)
     {
         parent::__construct($registry, User::class);
+        $this->manager = $manager;
     }
+
+    public function saveUser($email, $name, $surname, $phone, $birthday, $isConfirm)
+    {
+        $newUser = new User();
+
+        $newUser
+            ->setEmail($email)
+            ->setName($name)
+            ->setSurname($surname)
+            ->setBirthday($birthday)
+            ->setPhone($phone)
+            ->setIsConfirm($isConfirm);
+
+        $this->manager->persist($newUser);
+        $this->manager->flush();
+    }
+
+    public function updateUser(User $user): User
+    {
+        $this->manager->persist($user);
+        $this->manager->flush();
+
+        return $user;
+    }
+
+    public function removeUser(User $user)
+    {
+        $this->manager->remove($user);
+        $this->manager->flush();
+    }
+
+
 
     // /**
     //  * @return User[] Returns an array of User objects
